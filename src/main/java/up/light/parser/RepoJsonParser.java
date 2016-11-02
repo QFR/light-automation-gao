@@ -21,6 +21,7 @@ import com.google.gson.reflect.TypeToken;
 import up.light.io.IResource;
 import up.light.repository.ByStrategy;
 import up.light.repository.LocatorBean;
+import up.light.utils.LogUtil;
 
 /**
  * @version 1.0
@@ -40,6 +41,7 @@ public class RepoJsonParser implements IParser<Map<String, LocatorBean>> {
 			m = gson.fromJson(reader, new TypeToken<Map<String, LocatorBean>>() {
 			}.getType());
 		} catch (IOException e) {
+			LogUtil.log.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		}
 
