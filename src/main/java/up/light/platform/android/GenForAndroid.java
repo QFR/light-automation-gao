@@ -2,6 +2,7 @@ package up.light.platform.android;
 
 import java.io.File;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -36,6 +37,8 @@ public class GenForAndroid implements IDriverGenerator {
 		builder.withArgument(GeneralServerFlag.LOG_LEVEL, "warn:debug");
 		AppiumDriverLocalService service = builder.build();
 		driver = new AndroidDriver<>(service, getDc());
+		driver.manage().timeouts().implicitlyWait(Integer.valueOf(Setting.getProperty("driver.timeout")),
+					TimeUnit.SECONDS);
 
 		LogUtil.log.info("[Driver] generate driver " + driver);
 

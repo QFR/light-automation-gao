@@ -1,5 +1,7 @@
 package up.light.wait;
 
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
@@ -8,6 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import up.light.Setting;
 import up.light.pagefactory.TestElement;
 import up.light.utils.LogUtil;
 
@@ -21,6 +24,7 @@ public abstract class WaitUtil {
 
 	public static boolean exists(final WebDriver driver, final TestElement e, int seconds) {
 		LogUtil.log.debug("[WaitUtil exists] begin - " + e.getBy() + ", time: " + seconds);
+		setTimeout(driver);
 
 		boolean result = true;
 		try {
@@ -34,6 +38,7 @@ public abstract class WaitUtil {
 			result = false;
 		}
 
+		restoreTimeout(driver);
 		LogUtil.log.debug("[WaitUtil exists] end - result: " + result);
 
 		return result;
@@ -41,6 +46,7 @@ public abstract class WaitUtil {
 
 	public static WebElement waitFor(final WebDriver driver, final TestElement e, int seconds) {
 		LogUtil.log.debug("[WaitUtil waitFor] begin - " + e.getBy() + ", time: " + seconds);
+		setTimeout(driver);
 
 		WebElement element = new WebDriverWait(driver, seconds).until(new ExpectedCondition<WebElement>() {
 			@Override
@@ -54,6 +60,7 @@ public abstract class WaitUtil {
 			}
 		});
 
+		restoreTimeout(driver);
 		LogUtil.log.debug("[WaitUtil waitFor] end");
 
 		return element;
@@ -61,6 +68,7 @@ public abstract class WaitUtil {
 
 	public static void untilGone(final WebDriver driver, final TestElement e, int seconds) {
 		LogUtil.log.debug("[WaitUtil untilGone] begin - " + e.getBy() + ", time: " + seconds);
+		setTimeout(driver);
 
 		new WebDriverWait(driver, seconds, seconds).until(new ExpectedCondition<Boolean>() {
 			@Override
@@ -83,6 +91,7 @@ public abstract class WaitUtil {
 			}
 		});
 
+		restoreTimeout(driver);
 		LogUtil.log.debug("[WaitUtil untilGone] end");
 	}
 
@@ -114,7 +123,7 @@ public abstract class WaitUtil {
 			@Override
 			public String apply(WebDriver input) {
 				String actual = e.getText();
-				if(condition.isTrue(expectValue, actual))
+				if (condition.isTrue(expectValue, actual))
 					return actual;
 				return null;
 			}
@@ -138,5 +147,14 @@ public abstract class WaitUtil {
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private static void setTimeout(WebDriver driver) {
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+	}
+
+	private static void restoreTimeout(WebDriver driver) {
+		driver.manage().timeouts().implicitlyWait(Integer.valueOf(Setting.getProperty("driver.timeout")),
+				TimeUnit.SECONDS);
 	}
 }

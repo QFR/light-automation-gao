@@ -40,5 +40,7 @@ public class Runner {
 
 		DriverFactory.initialize();
 		TestElement.initialize(DriverFactory.getContextHandler());
+
+		Setting.setProperty("driver.timeout", "5");
 	}
 }

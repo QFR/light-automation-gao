@@ -21,7 +21,7 @@ public class GenForIOS implements IDriverGenerator {
 	@Override
 	public WebDriver generate() {
 		IOSDriver<IOSElement> driver = null;
-		
+
 		DesiredCapabilities dc = new DesiredCapabilities();
 		dc.setCapability(MobileCapabilityType.DEVICE_NAME, Setting.getProperty("dc.devices"));
 		dc.setCapability(MobileCapabilityType.PLATFORM_VERSION, Setting.getProperty("dc.platform_version"));
@@ -32,7 +32,8 @@ public class GenForIOS implements IDriverGenerator {
 
 		try {
 			driver = new IOSDriver<IOSElement>(new URL("http://127.0.0.1:4723/wd/hub"), dc);
-			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+			driver.manage().timeouts().implicitlyWait(Integer.valueOf(Setting.getProperty("driver.timeout")),
+					TimeUnit.SECONDS);
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
