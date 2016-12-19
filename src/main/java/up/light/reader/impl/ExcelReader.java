@@ -117,7 +117,8 @@ public class ExcelReader implements IReader {
 		Row r = sheet.getRow(index);
 
 		for (int i = 0; i < sequence.length; ++i) {
-			m.put(title.get(i), r.getCell(sequence[i]).getStringCellValue());
+			if (r.getCell(sequence[i]) !=null)
+				m.put(title.get(i), r.getCell(sequence[i]).getStringCellValue());
 		}
 
 		LogUtil.log.debug("data: " + m + " line: " + index);
